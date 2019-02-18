@@ -1,4 +1,11 @@
-type User @model {
+type User
+  @model
+  @searchable
+  @auth(
+    rules: [
+      { allow: owner, queries: null, mutations: [create, update, delete] }
+    ]
+  ) {
   id: ID!
   username: String!
   bio: String
@@ -8,20 +15,24 @@ type User @model {
   categories: [Category] @connection
 }
 
-type Category @model @searchable {
+type Category
+  @model(queries: null, mutations: null, subscriptions: null)
+  @searchable(queries: { search: "searchCategories" })
+  @auth(
+    rules: [
+      { allow: owner, queries: null, mutations: [create, update, delete] }
+    ]
+  ) {
   id: ID!
-  title: String!
+  name: String!
+  icon: String!
   threads: [Thread] @connection(name: "CategoryThreads", sortField: "createdAt")
 }
 
 type Thread
   @model
   @searchable
-  @auth(
-    rules: [
-      { allow: owner, queries: null, mutations: [create, update, delete] }
-    ]
-  ) {
+  @auth(rules: [{ allow: owner, queries: null, mutations: [create, delete] }]) {
   id: ID!
   category: Category
     @connection(name: "CategoryThreads", sortField: "createdAt")
@@ -32,12 +43,12 @@ type Thread
 }
 
 type Post
-  @model
-  @auth(
-    rules: [
-      { allow: owner, queries: null, mutations: [create, update, delete] }
-    ]
-  ) {
+  @model(
+    queries: null
+    subscriptions: null
+    mutations: { create: "createPost", delete: "deletePost", update: null }
+  )
+  @auth(rules: [{ allow: owner, mutations: [create, delete] }]) {
   id: ID!
   video: S3Object!
   creator: User @connection
@@ -50,12 +61,8 @@ type Post
 }
 
 type Comment
-  @model
-  @auth(
-    rules: [
-      { allow: owner, queries: null, mutations: [create, update, delete] }
-    ]
-  ) {
+  @model(queries: null, subscriptions: null)
+  @auth(rules: [{ allow: owner, mutations: [create, update, delete] }]) {
   id: ID!
   text: String!
   post: Post @connection(name: "PostComments", sortField: "createdAt")

@@ -10,7 +10,8 @@ type User {
 
 type Category {
   id: ID!
-  title: String!
+  name: String!
+  icon: String!
   threads(filter: ModelThreadFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelThreadConnection
 }
 
@@ -127,15 +128,10 @@ input ModelUserFilterInput {
 type Query {
   getUser(id: ID!): User
   listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
-  getCategory(id: ID!): Category
-  listCategorys(filter: ModelCategoryFilterInput, limit: Int, nextToken: String): ModelCategoryConnection
   getThread(id: ID!): Thread
   listThreads(filter: ModelThreadFilterInput, limit: Int, nextToken: String): ModelThreadConnection
-  getPost(id: ID!): Post
-  listPosts(filter: ModelPostFilterInput, limit: Int, nextToken: String): ModelPostConnection
-  getComment(id: ID!): Comment
-  listComments(filter: ModelCommentFilterInput, limit: Int, nextToken: String): ModelCommentConnection
-  searchCategorys(filter: SearchableCategoryFilterInput, sort: SearchableCategorySortInput, limit: Int, nextToken: Int): SearchableCategoryConnection
+  searchUsers(filter: SearchableUserFilterInput, sort: SearchableUserSortInput, limit: Int, nextToken: Int): SearchableUserConnection
+  searchCategories(filter: SearchableCategoryFilterInput, sort: SearchableCategorySortInput, limit: Int, nextToken: Int): SearchableCategoryConnection
   searchThreads(filter: SearchableThreadFilterInput, sort: SearchableThreadSortInput, limit: Int, nextToken: Int): SearchableThreadConnection
 }
 
@@ -159,14 +155,10 @@ type Mutation {
   createUser(input: CreateUserInput!): User
   updateUser(input: UpdateUserInput!): User
   deleteUser(input: DeleteUserInput!): User
-  createCategory(input: CreateCategoryInput!): Category
-  updateCategory(input: UpdateCategoryInput!): Category
-  deleteCategory(input: DeleteCategoryInput!): Category
   createThread(input: CreateThreadInput!): Thread
   updateThread(input: UpdateThreadInput!): Thread
   deleteThread(input: DeleteThreadInput!): Thread
   createPost(input: CreatePostInput!): Post
-  updatePost(input: UpdatePostInput!): Post
   deletePost(input: DeletePostInput!): Post
   createComment(input: CreateCommentInput!): Comment
   updateComment(input: UpdateCommentInput!): Comment
@@ -177,42 +169,22 @@ type Subscription {
   onCreateUser: User @aws_subscribe(mutations: ["createUser"])
   onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
   onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
-  onCreateCategory: Category @aws_subscribe(mutations: ["createCategory"])
-  onUpdateCategory: Category @aws_subscribe(mutations: ["updateCategory"])
-  onDeleteCategory: Category @aws_subscribe(mutations: ["deleteCategory"])
   onCreateThread: Thread @aws_subscribe(mutations: ["createThread"])
   onUpdateThread: Thread @aws_subscribe(mutations: ["updateThread"])
   onDeleteThread: Thread @aws_subscribe(mutations: ["deleteThread"])
-  onCreatePost: Post @aws_subscribe(mutations: ["createPost"])
-  onUpdatePost: Post @aws_subscribe(mutations: ["updatePost"])
-  onDeletePost: Post @aws_subscribe(mutations: ["deletePost"])
-  onCreateComment: Comment @aws_subscribe(mutations: ["createComment"])
-  onUpdateComment: Comment @aws_subscribe(mutations: ["updateComment"])
-  onDeleteComment: Comment @aws_subscribe(mutations: ["deleteComment"])
-}
-
-type ModelCategoryConnection {
-  items: [Category]
-  nextToken: String
-}
-
-input ModelCategoryFilterInput {
-  id: ModelIDFilterInput
-  title: ModelStringFilterInput
-  and: [ModelCategoryFilterInput]
-  or: [ModelCategoryFilterInput]
-  not: ModelCategoryFilterInput
 }
 
 input CreateCategoryInput {
   id: ID
-  title: String!
+  name: String!
+  icon: String!
   userCategoriesId: ID
 }
 
 input UpdateCategoryInput {
   id: ID!
-  title: String
+  name: String
+  icon: String
   userCategoriesId: ID
 }
 
@@ -260,22 +232,6 @@ input S3ObjectInput {
   key: String!
 }
 
-type ModelPostConnection {
-  items: [Post]
-  nextToken: String
-}
-
-input ModelPostFilterInput {
-  id: ModelIDFilterInput
-  upvotes: ModelIntFilterInput
-  downvotes: ModelIntFilterInput
-  createdAt: ModelStringFilterInput
-  updatedAt: ModelStringFilterInput
-  and: [ModelPostFilterInput]
-  or: [ModelPostFilterInput]
-  not: ModelPostFilterInput
-}
-
 input CreatePostInput {
   id: ID
   video: S3ObjectInput!
@@ -302,21 +258,6 @@ input DeletePostInput {
   id: ID
 }
 
-type ModelCommentConnection {
-  items: [Comment]
-  nextToken: String
-}
-
-input ModelCommentFilterInput {
-  id: ModelIDFilterInput
-  text: ModelStringFilterInput
-  createdAt: ModelStringFilterInput
-  updatedAt: ModelStringFilterInput
-  and: [ModelCommentFilterInput]
-  or: [ModelCommentFilterInput]
-  not: ModelCommentFilterInput
-}
-
 input CreateCommentInput {
   id: ID
   text: String!
@@ -337,6 +278,51 @@ input UpdateCommentInput {
 
 input DeleteCommentInput {
   id: ID
+}
+
+type ModelCategoryConnection {
+  items: [Category]
+  nextToken: String
+}
+
+input ModelCategoryFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  icon: ModelStringFilterInput
+  and: [ModelCategoryFilterInput]
+  or: [ModelCategoryFilterInput]
+  not: ModelCategoryFilterInput
+}
+
+type ModelPostConnection {
+  items: [Post]
+  nextToken: String
+}
+
+input ModelPostFilterInput {
+  id: ModelIDFilterInput
+  upvotes: ModelIntFilterInput
+  downvotes: ModelIntFilterInput
+  createdAt: ModelStringFilterInput
+  updatedAt: ModelStringFilterInput
+  and: [ModelPostFilterInput]
+  or: [ModelPostFilterInput]
+  not: ModelPostFilterInput
+}
+
+type ModelCommentConnection {
+  items: [Comment]
+  nextToken: String
+}
+
+input ModelCommentFilterInput {
+  id: ModelIDFilterInput
+  text: ModelStringFilterInput
+  createdAt: ModelStringFilterInput
+  updatedAt: ModelStringFilterInput
+  and: [ModelCommentFilterInput]
+  or: [ModelCommentFilterInput]
+  not: ModelCommentFilterInput
 }
 
 input SearchableStringFilterInput {
@@ -388,12 +374,13 @@ input SearchableBooleanFilterInput {
   ne: Boolean
 }
 
-input SearchableCategoryFilterInput {
+input SearchableUserFilterInput {
   id: SearchableIDFilterInput
-  title: SearchableStringFilterInput
-  and: [SearchableCategoryFilterInput]
-  or: [SearchableCategoryFilterInput]
-  not: SearchableCategoryFilterInput
+  username: SearchableStringFilterInput
+  bio: SearchableStringFilterInput
+  and: [SearchableUserFilterInput]
+  or: [SearchableUserFilterInput]
+  not: SearchableUserFilterInput
 }
 
 enum SearchableSortDirection {
@@ -401,9 +388,35 @@ enum SearchableSortDirection {
   desc
 }
 
+enum SearchableUserSortableFields {
+  id
+  username
+  bio
+}
+
+input SearchableUserSortInput {
+  field: SearchableUserSortableFields
+  direction: SearchableSortDirection
+}
+
+type SearchableUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input SearchableCategoryFilterInput {
+  id: SearchableIDFilterInput
+  name: SearchableStringFilterInput
+  icon: SearchableStringFilterInput
+  and: [SearchableCategoryFilterInput]
+  or: [SearchableCategoryFilterInput]
+  not: SearchableCategoryFilterInput
+}
+
 enum SearchableCategorySortableFields {
   id
-  title
+  name
+  icon
 }
 
 input SearchableCategorySortInput {
