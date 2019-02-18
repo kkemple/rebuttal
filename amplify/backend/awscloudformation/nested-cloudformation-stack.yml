@@ -157,10 +157,10 @@
 					},
 					"ElasticSearchStreamingLambdaCodeS3Key": "amplify-appsync-files/python_streaming_function.zip",
 					"ElasticSearchStreamingLambdaCodeS3Bucket": "rebuttal-20190218133418-deployment",
-					"schemaGraphql": "s3://rebuttal-20190218133418-deployment/amplify-appsync-files/schema.graphql.1550525728943",
+					"schemaGraphql": "s3://rebuttal-20190218133418-deployment/amplify-appsync-files/schema.graphql.1550530926084",
 					"ResolverBucket": "rebuttal-20190218133418-deployment",
 					"ResolverRootKey": "amplify-appsync-files",
-					"DeploymentTimestamp": "1550525728943",
+					"DeploymentTimestamp": "1550530926084",
 					"env": "master"
 				}
 			}

@@ -59,7 +59,8 @@ export const getUser = `query GetUser($id: ID!) {
     categories {
       items {
         id
-        title
+        name
+        icon
       }
       nextToken
     }
@@ -97,44 +98,13 @@ export const listUsers = `query ListUsers(
   }
 }
 `;
-export const getCategory = `query GetCategory($id: ID!) {
-  getCategory(id: $id) {
-    id
-    title
-    threads {
-      items {
-        id
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const listCategorys = `query ListCategorys(
-  $filter: ModelCategoryFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listCategorys(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      title
-      threads {
-        nextToken
-      }
-    }
-    nextToken
-  }
-}
-`;
 export const getThread = `query GetThread($id: ID!) {
   getThread(id: $id) {
     id
     category {
       id
-      title
+      name
+      icon
       threads {
         nextToken
       }
@@ -185,7 +155,8 @@ export const listThreads = `query ListThreads(
       id
       category {
         id
-        title
+        name
+        icon
       }
       posts {
         nextToken
@@ -202,193 +173,13 @@ export const listThreads = `query ListThreads(
   }
 }
 `;
-export const getPost = `query GetPost($id: ID!) {
-  getPost(id: $id) {
-    id
-    video {
-      bucket
-      region
-      key
-    }
-    creator {
-      id
-      username
-      bio
-      followers {
-        id
-        username
-        bio
-      }
-      following {
-        id
-        username
-        bio
-      }
-      threads {
-        nextToken
-      }
-      categories {
-        nextToken
-      }
-    }
-    thread {
-      id
-      category {
-        id
-        title
-      }
-      posts {
-        nextToken
-      }
-      owner {
-        id
-        username
-        bio
-      }
-      createdAt
-      updatedAt
-    }
-    upvotes
-    downvotes
-    comments {
-      items {
-        id
-        text
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-    createdAt
-    updatedAt
-  }
-}
-`;
-export const listPosts = `query ListPosts(
-  $filter: ModelPostFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listPosts(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      video {
-        bucket
-        region
-        key
-      }
-      creator {
-        id
-        username
-        bio
-      }
-      thread {
-        id
-        createdAt
-        updatedAt
-      }
-      upvotes
-      downvotes
-      comments {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-    nextToken
-  }
-}
-`;
-export const getComment = `query GetComment($id: ID!) {
-  getComment(id: $id) {
-    id
-    text
-    post {
-      id
-      video {
-        bucket
-        region
-        key
-      }
-      creator {
-        id
-        username
-        bio
-      }
-      thread {
-        id
-        createdAt
-        updatedAt
-      }
-      upvotes
-      downvotes
-      comments {
-        nextToken
-      }
-      createdAt
-      updatedAt
-    }
-    owner {
-      id
-      username
-      bio
-      followers {
-        id
-        username
-        bio
-      }
-      following {
-        id
-        username
-        bio
-      }
-      threads {
-        nextToken
-      }
-      categories {
-        nextToken
-      }
-    }
-    createdAt
-    updatedAt
-  }
-}
-`;
-export const listComments = `query ListComments(
-  $filter: ModelCommentFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listComments(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      text
-      post {
-        id
-        upvotes
-        downvotes
-        createdAt
-        updatedAt
-      }
-      owner {
-        id
-        username
-        bio
-      }
-      createdAt
-      updatedAt
-    }
-    nextToken
-  }
-}
-`;
-export const searchCategorys = `query SearchCategorys(
-  $filter: SearchableCategoryFilterInput
-  $sort: SearchableCategorySortInput
+export const searchUsers = `query SearchUsers(
+  $filter: SearchableUserFilterInput
+  $sort: SearchableUserSortInput
   $limit: Int
   $nextToken: Int
 ) {
-  searchCategorys(
+  searchUsers(
     filter: $filter
     sort: $sort
     limit: $limit
@@ -396,7 +187,45 @@ export const searchCategorys = `query SearchCategorys(
   ) {
     items {
       id
-      title
+      username
+      bio
+      followers {
+        id
+        username
+        bio
+      }
+      following {
+        id
+        username
+        bio
+      }
+      threads {
+        nextToken
+      }
+      categories {
+        nextToken
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const searchCategories = `query SearchCategories(
+  $filter: SearchableCategoryFilterInput
+  $sort: SearchableCategorySortInput
+  $limit: Int
+  $nextToken: Int
+) {
+  searchCategories(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      name
+      icon
       threads {
         nextToken
       }
@@ -421,7 +250,8 @@ export const searchThreads = `query SearchThreads(
       id
       category {
         id
-        title
+        name
+        icon
       }
       posts {
         nextToken

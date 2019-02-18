@@ -59,7 +59,8 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
     categories {
       items {
         id
-        title
+        name
+        icon
       }
       nextToken
     }
@@ -124,7 +125,8 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     categories {
       items {
         id
-        title
+        name
+        icon
       }
       nextToken
     }
@@ -189,52 +191,8 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
     categories {
       items {
         id
-        title
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const createCategory = `mutation CreateCategory($input: CreateCategoryInput!) {
-  createCategory(input: $input) {
-    id
-    title
-    threads {
-      items {
-        id
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const updateCategory = `mutation UpdateCategory($input: UpdateCategoryInput!) {
-  updateCategory(input: $input) {
-    id
-    title
-    threads {
-      items {
-        id
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-  }
-}
-`;
-export const deleteCategory = `mutation DeleteCategory($input: DeleteCategoryInput!) {
-  deleteCategory(input: $input) {
-    id
-    title
-    threads {
-      items {
-        id
-        createdAt
-        updatedAt
+        name
+        icon
       }
       nextToken
     }
@@ -246,7 +204,8 @@ export const createThread = `mutation CreateThread($input: CreateThreadInput!) {
     id
     category {
       id
-      title
+      name
+      icon
       threads {
         nextToken
       }
@@ -292,7 +251,8 @@ export const updateThread = `mutation UpdateThread($input: UpdateThreadInput!) {
     id
     category {
       id
-      title
+      name
+      icon
       threads {
         nextToken
       }
@@ -338,7 +298,8 @@ export const deleteThread = `mutation DeleteThread($input: DeleteThreadInput!) {
     id
     category {
       id
-      title
+      name
+      icon
       threads {
         nextToken
       }
@@ -412,69 +373,8 @@ export const createPost = `mutation CreatePost($input: CreatePostInput!) {
       id
       category {
         id
-        title
-      }
-      posts {
-        nextToken
-      }
-      owner {
-        id
-        username
-        bio
-      }
-      createdAt
-      updatedAt
-    }
-    upvotes
-    downvotes
-    comments {
-      items {
-        id
-        text
-        createdAt
-        updatedAt
-      }
-      nextToken
-    }
-    createdAt
-    updatedAt
-  }
-}
-`;
-export const updatePost = `mutation UpdatePost($input: UpdatePostInput!) {
-  updatePost(input: $input) {
-    id
-    video {
-      bucket
-      region
-      key
-    }
-    creator {
-      id
-      username
-      bio
-      followers {
-        id
-        username
-        bio
-      }
-      following {
-        id
-        username
-        bio
-      }
-      threads {
-        nextToken
-      }
-      categories {
-        nextToken
-      }
-    }
-    thread {
-      id
-      category {
-        id
-        title
+        name
+        icon
       }
       posts {
         nextToken
@@ -536,7 +436,8 @@ export const deletePost = `mutation DeletePost($input: DeletePostInput!) {
       id
       category {
         id
-        title
+        name
+        icon
       }
       posts {
         nextToken
