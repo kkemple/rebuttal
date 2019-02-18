@@ -1,0 +1,442 @@
+type User {
+  id: ID!
+  username: String!
+  bio: String
+  followers: [User]
+  following: [User]
+  threads(filter: ModelThreadFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelThreadConnection
+  categories(filter: ModelCategoryFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCategoryConnection
+}
+
+type Category {
+  id: ID!
+  title: String!
+  threads(filter: ModelThreadFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelThreadConnection
+}
+
+type Thread {
+  id: ID!
+  category: Category
+  posts(filter: ModelPostFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelPostConnection
+  owner: User
+  createdAt: String
+  updatedAt: String
+}
+
+type Post {
+  id: ID!
+  video: S3Object!
+  creator: User
+  thread: Thread
+  upvotes: Int
+  downvotes: Int
+  comments(filter: ModelCommentFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCommentConnection
+  createdAt: String
+  updatedAt: String
+}
+
+type Comment {
+  id: ID!
+  text: String!
+  post: Post
+  owner: User
+  createdAt: String
+  updatedAt: String
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelStringFilterInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+}
+
+input ModelIDFilterInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+}
+
+input ModelIntFilterInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  contains: Int
+  notContains: Int
+  between: [Int]
+}
+
+input ModelFloatFilterInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  contains: Float
+  notContains: Float
+  between: [Float]
+}
+
+input ModelBooleanFilterInput {
+  ne: Boolean
+  eq: Boolean
+}
+
+input ModelUserFilterInput {
+  id: ModelIDFilterInput
+  username: ModelStringFilterInput
+  bio: ModelStringFilterInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+type Query {
+  getUser(id: ID!): User
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  getCategory(id: ID!): Category
+  listCategorys(filter: ModelCategoryFilterInput, limit: Int, nextToken: String): ModelCategoryConnection
+  getThread(id: ID!): Thread
+  listThreads(filter: ModelThreadFilterInput, limit: Int, nextToken: String): ModelThreadConnection
+  getPost(id: ID!): Post
+  listPosts(filter: ModelPostFilterInput, limit: Int, nextToken: String): ModelPostConnection
+  getComment(id: ID!): Comment
+  listComments(filter: ModelCommentFilterInput, limit: Int, nextToken: String): ModelCommentConnection
+  searchCategorys(filter: SearchableCategoryFilterInput, sort: SearchableCategorySortInput, limit: Int, nextToken: Int): SearchableCategoryConnection
+  searchThreads(filter: SearchableThreadFilterInput, sort: SearchableThreadSortInput, limit: Int, nextToken: Int): SearchableThreadConnection
+}
+
+input CreateUserInput {
+  id: ID
+  username: String!
+  bio: String
+}
+
+input UpdateUserInput {
+  id: ID!
+  username: String
+  bio: String
+}
+
+input DeleteUserInput {
+  id: ID
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(input: DeleteUserInput!): User
+  createCategory(input: CreateCategoryInput!): Category
+  updateCategory(input: UpdateCategoryInput!): Category
+  deleteCategory(input: DeleteCategoryInput!): Category
+  createThread(input: CreateThreadInput!): Thread
+  updateThread(input: UpdateThreadInput!): Thread
+  deleteThread(input: DeleteThreadInput!): Thread
+  createPost(input: CreatePostInput!): Post
+  updatePost(input: UpdatePostInput!): Post
+  deletePost(input: DeletePostInput!): Post
+  createComment(input: CreateCommentInput!): Comment
+  updateComment(input: UpdateCommentInput!): Comment
+  deleteComment(input: DeleteCommentInput!): Comment
+}
+
+type Subscription {
+  onCreateUser: User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateCategory: Category @aws_subscribe(mutations: ["createCategory"])
+  onUpdateCategory: Category @aws_subscribe(mutations: ["updateCategory"])
+  onDeleteCategory: Category @aws_subscribe(mutations: ["deleteCategory"])
+  onCreateThread: Thread @aws_subscribe(mutations: ["createThread"])
+  onUpdateThread: Thread @aws_subscribe(mutations: ["updateThread"])
+  onDeleteThread: Thread @aws_subscribe(mutations: ["deleteThread"])
+  onCreatePost: Post @aws_subscribe(mutations: ["createPost"])
+  onUpdatePost: Post @aws_subscribe(mutations: ["updatePost"])
+  onDeletePost: Post @aws_subscribe(mutations: ["deletePost"])
+  onCreateComment: Comment @aws_subscribe(mutations: ["createComment"])
+  onUpdateComment: Comment @aws_subscribe(mutations: ["updateComment"])
+  onDeleteComment: Comment @aws_subscribe(mutations: ["deleteComment"])
+}
+
+type ModelCategoryConnection {
+  items: [Category]
+  nextToken: String
+}
+
+input ModelCategoryFilterInput {
+  id: ModelIDFilterInput
+  title: ModelStringFilterInput
+  and: [ModelCategoryFilterInput]
+  or: [ModelCategoryFilterInput]
+  not: ModelCategoryFilterInput
+}
+
+input CreateCategoryInput {
+  id: ID
+  title: String!
+  userCategoriesId: ID
+}
+
+input UpdateCategoryInput {
+  id: ID!
+  title: String
+  userCategoriesId: ID
+}
+
+input DeleteCategoryInput {
+  id: ID
+}
+
+type ModelThreadConnection {
+  items: [Thread]
+  nextToken: String
+}
+
+input ModelThreadFilterInput {
+  id: ModelIDFilterInput
+  createdAt: ModelStringFilterInput
+  updatedAt: ModelStringFilterInput
+  and: [ModelThreadFilterInput]
+  or: [ModelThreadFilterInput]
+  not: ModelThreadFilterInput
+}
+
+input CreateThreadInput {
+  id: ID
+  createdAt: String
+  updatedAt: String
+  threadCategoryId: ID
+  threadOwnerId: ID
+}
+
+input UpdateThreadInput {
+  id: ID!
+  createdAt: String
+  updatedAt: String
+  threadCategoryId: ID
+  threadOwnerId: ID
+}
+
+input DeleteThreadInput {
+  id: ID
+}
+
+input S3ObjectInput {
+  bucket: String!
+  region: String!
+  key: String!
+}
+
+type ModelPostConnection {
+  items: [Post]
+  nextToken: String
+}
+
+input ModelPostFilterInput {
+  id: ModelIDFilterInput
+  upvotes: ModelIntFilterInput
+  downvotes: ModelIntFilterInput
+  createdAt: ModelStringFilterInput
+  updatedAt: ModelStringFilterInput
+  and: [ModelPostFilterInput]
+  or: [ModelPostFilterInput]
+  not: ModelPostFilterInput
+}
+
+input CreatePostInput {
+  id: ID
+  video: S3ObjectInput!
+  upvotes: Int
+  downvotes: Int
+  createdAt: String
+  updatedAt: String
+  postCreatorId: ID
+  postThreadId: ID
+}
+
+input UpdatePostInput {
+  id: ID!
+  video: S3ObjectInput
+  upvotes: Int
+  downvotes: Int
+  createdAt: String
+  updatedAt: String
+  postCreatorId: ID
+  postThreadId: ID
+}
+
+input DeletePostInput {
+  id: ID
+}
+
+type ModelCommentConnection {
+  items: [Comment]
+  nextToken: String
+}
+
+input ModelCommentFilterInput {
+  id: ModelIDFilterInput
+  text: ModelStringFilterInput
+  createdAt: ModelStringFilterInput
+  updatedAt: ModelStringFilterInput
+  and: [ModelCommentFilterInput]
+  or: [ModelCommentFilterInput]
+  not: ModelCommentFilterInput
+}
+
+input CreateCommentInput {
+  id: ID
+  text: String!
+  createdAt: String
+  updatedAt: String
+  commentPostId: ID
+  commentOwnerId: ID
+}
+
+input UpdateCommentInput {
+  id: ID!
+  text: String
+  createdAt: String
+  updatedAt: String
+  commentPostId: ID
+  commentOwnerId: ID
+}
+
+input DeleteCommentInput {
+  id: ID
+}
+
+input SearchableStringFilterInput {
+  ne: String
+  eq: String
+  match: String
+  matchPhrase: String
+  matchPhrasePrefix: String
+  multiMatch: String
+  exists: Boolean
+  wildcard: String
+  regexp: String
+}
+
+input SearchableIDFilterInput {
+  ne: ID
+  eq: ID
+  match: ID
+  matchPhrase: ID
+  matchPhrasePrefix: ID
+  multiMatch: ID
+  exists: Boolean
+  wildcard: ID
+  regexp: ID
+}
+
+input SearchableIntFilterInput {
+  ne: Int
+  gt: Int
+  lt: Int
+  gte: Int
+  lte: Int
+  eq: Int
+  range: [Int]
+}
+
+input SearchableFloatFilterInput {
+  ne: Float
+  gt: Float
+  lt: Float
+  gte: Float
+  lte: Float
+  eq: Float
+  range: [Float]
+}
+
+input SearchableBooleanFilterInput {
+  eq: Boolean
+  ne: Boolean
+}
+
+input SearchableCategoryFilterInput {
+  id: SearchableIDFilterInput
+  title: SearchableStringFilterInput
+  and: [SearchableCategoryFilterInput]
+  or: [SearchableCategoryFilterInput]
+  not: SearchableCategoryFilterInput
+}
+
+enum SearchableSortDirection {
+  asc
+  desc
+}
+
+enum SearchableCategorySortableFields {
+  id
+  title
+}
+
+input SearchableCategorySortInput {
+  field: SearchableCategorySortableFields
+  direction: SearchableSortDirection
+}
+
+type SearchableCategoryConnection {
+  items: [Category]
+  nextToken: String
+}
+
+input SearchableThreadFilterInput {
+  id: SearchableIDFilterInput
+  createdAt: SearchableStringFilterInput
+  updatedAt: SearchableStringFilterInput
+  and: [SearchableThreadFilterInput]
+  or: [SearchableThreadFilterInput]
+  not: SearchableThreadFilterInput
+}
+
+enum SearchableThreadSortableFields {
+  id
+  createdAt
+  updatedAt
+}
+
+input SearchableThreadSortInput {
+  field: SearchableThreadSortableFields
+  direction: SearchableSortDirection
+}
+
+type SearchableThreadConnection {
+  items: [Thread]
+  nextToken: String
+}

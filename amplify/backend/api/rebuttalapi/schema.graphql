@@ -1,0 +1,71 @@
+type User @model {
+  id: ID!
+  username: String!
+  bio: String
+  followers: [User]
+  following: [User]
+  threads: [Thread] @connection(name: "ThreadOwner", sortField: "createdAt")
+  categories: [Category] @connection
+}
+
+type Category @model @searchable {
+  id: ID!
+  title: String!
+  threads: [Thread] @connection(name: "CategoryThreads", sortField: "createdAt")
+}
+
+type Thread
+  @model
+  @searchable
+  @auth(
+    rules: [
+      { allow: owner, queries: null, mutations: [create, update, delete] }
+    ]
+  ) {
+  id: ID!
+  category: Category
+    @connection(name: "CategoryThreads", sortField: "createdAt")
+  posts: [Post] @connection(name: "ThreadPosts", sortField: "createdAt")
+  owner: User @connection(name: "ThreadOwner", sortField: "createdAt")
+  createdAt: String
+  updatedAt: String
+}
+
+type Post
+  @model
+  @auth(
+    rules: [
+      { allow: owner, queries: null, mutations: [create, update, delete] }
+    ]
+  ) {
+  id: ID!
+  video: S3Object!
+  creator: User @connection
+  thread: Thread @connection(name: "ThreadPosts", sortField: "createdAt")
+  upvotes: Int
+  downvotes: Int
+  comments: [Comment] @connection(name: "PostComments", sortField: "createdAt")
+  createdAt: String
+  updatedAt: String
+}
+
+type Comment
+  @model
+  @auth(
+    rules: [
+      { allow: owner, queries: null, mutations: [create, update, delete] }
+    ]
+  ) {
+  id: ID!
+  text: String!
+  post: Post @connection(name: "PostComments", sortField: "createdAt")
+  owner: User @connection
+  createdAt: String
+  updatedAt: String
+}
+
+type S3Object {
+  bucket: String!
+  region: String!
+  key: String!
+}
