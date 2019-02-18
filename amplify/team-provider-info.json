@@ -1,0 +1,19 @@
+{
+    "master": {
+        "awscloudformation": {
+            "AuthRoleName": "rebuttal-20190218133418-authRole",
+            "UnauthRoleArn": "arn:aws:iam::247237495454:role/rebuttal-20190218133418-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::247237495454:role/rebuttal-20190218133418-authRole",
+            "Region": "us-east-1",
+            "DeploymentBucketName": "rebuttal-20190218133418-deployment",
+            "UnauthRoleName": "rebuttal-20190218133418-unauthRole",
+            "StackName": "rebuttal-20190218133418",
+            "StackId": "arn:aws:cloudformation:us-east-1:247237495454:stack/rebuttal-20190218133418/ce428180-33ab-11e9-a3a9-12a886f5f55e"
+        },
+        "categories": {
+            "auth": {
+                "cognito1a3c061d": {}
+            }
+        }
+    }
+}
